@@ -1,40 +1,109 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
+import 'package:english_words/english_words.dart';
+import 'dart:math';
 
-void main() {
-  runApp(const MyApp());
-}
+import 'package:flutter/services.dart';
 
+void main() => runApp(const MyApp());
+
+// The main application
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
+    Widget playSection = Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        SizedBox(
+          child: TextFormField(
+            decoration: const InputDecoration(
+              hintText: 'Letter',
+            ),
+            inputFormatters: [
+              LengthLimitingTextInputFormatter(1)
+            ],
+          ),
+          width: 80,
+        ),
+        ElevatedButton(
+            onPressed: () {  },
+            child: const Text('Play'),
+        ),
+      ],
+    );
+
+
+    Widget startSection = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          child: TextFormField(
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'3-9'))
+            ],
+          ),
+          width: 80,
+        ),
+        ElevatedButton(
+          onPressed: () {  },
+          child: const Text('Start new game'),
+        ),
+      ],
+    );
+
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Hangman',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: Scaffold(
+        appBar: AppBar(
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text('Hangman'),
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              itemBuilder: (BuildContext context) {
+                return {'Language'}.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            ),
+          ],
+        ),
+        body: Center(
+          child: Column(
+            children: [
+              Stack(
+                alignment: AlignmentDirectional.bottomEnd,
+                children: [
+                  Image.asset(
+                    'images/hangman.jpg',
+                  ),
+                  playSection,
+                ]
+              ),
+              startSection,
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
 
+// Widget for the home page of your application. It is stateful, meaning
+// that it has a State object that contains fields that affect how it looks.
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
 
   // This class is the configuration for the state. It holds the values (in this
   // case the title) provided by the parent (in this case the App widget) and
@@ -49,6 +118,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  String _word = "";
+  var rng = Random();
+  // var wordList = nouns.sort((a, b) => a.length.compareTo(b.length));
 
   void _incrementCounter() {
     setState(() {
@@ -59,6 +131,27 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  /*void _decrementCounter() {
+    setState(() {
+
+      _counter--;
+    });
+  }*/
+
+  void _pressButton() {
+    int words = 1000;
+    setState(() {
+      _word = nouns.take(words).elementAt(rng.nextInt(words));
+    });
+  }
+
+  void handleClick(String value) {
+    switch (value) {
+      case 'Language':
+        break;
+    }
   }
 
   @override
@@ -74,6 +167,19 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: handleClick,
+            itemBuilder: (BuildContext context) {
+              return {'Language'}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+        ],
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -95,8 +201,14 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have violated the button this many times:',
+            Text(_word),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text('test'),
+                ElevatedButton(
+                    onPressed: _pressButton, child: const Text('Button')),
+              ],
             ),
             Text(
               '$_counter',
@@ -108,8 +220,13 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+        child: const Icon(Icons.exposure_plus_1),
+      ),
+      /*floatingActionButton: FloatingActionButton(
+        onPressed: _decrementCounter,
+        tooltip: 'Decrement',
+        child: const Icon(Icons.exposure_minus_1),
+      ),*/// This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
