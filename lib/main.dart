@@ -107,24 +107,16 @@ class _HomePageState extends State<HomePage> {
     if(win) {
       print("Correct, you won!");
       selectedPicture = PictureMarker.hangman;
-      _reset();
     }
   }
 
   void _checkGameOver() {
     if(_wrongCounter > 5) {
       print("Wrong, you lost the game!");
-      _reset();
       selectedPicture = PictureMarker.gameover;
     } else {
       setPicture();
     }
-  }
-
-  void _reset() {
-    _wrongCounter = 0;
-    _word = [];
-    _correct = [];
   }
 
   String _getWord(int wordLength) {
@@ -182,6 +174,24 @@ class _HomePageState extends State<HomePage> {
     return Image.asset(img);
   }
 
+  TextStyle spookyTextBig = const TextStyle(
+    fontFamily: 'MonsterPumpkin',
+    fontFamilyFallback: <String>[
+      'Noto Sans CJK SC',
+      'Noto Color Emoji',
+    ],
+    fontSize: 26,
+  );
+
+  TextStyle spookyTextSmall = const TextStyle(
+    fontFamily: 'MonsterPumpkin',
+    fontFamilyFallback: <String>[
+      'Noto Sans CJK SC',
+      'Noto Color Emoji',
+    ],
+    fontSize: 18,
+  );
+
   void setPicture() {
     switch(_wrongCounter) {
       case 0:
@@ -211,6 +221,7 @@ class _HomePageState extends State<HomePage> {
     // a letter and the button for submitting said letter
     Widget playSection = Row(
       mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         SizedBox(
           child: TextField(
@@ -228,11 +239,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          width: 80,
+          width: 60,
         ),
         ElevatedButton(
           onPressed: _playing && playController.text.isNotEmpty  ? _playButton : null,
-          child: const Text('Play'),
+          child: Text('Play', style: spookyTextSmall),
         ),
       ],
     );
@@ -258,7 +269,7 @@ class _HomePageState extends State<HomePage> {
         ),
         ElevatedButton(
           onPressed: startController.text.isNotEmpty ? _startButton : null,
-          child: const Text('Start game'),
+          child: Text('Start game', style: spookyTextSmall),
         ),
       ],
     );
@@ -266,14 +277,11 @@ class _HomePageState extends State<HomePage> {
     // Widget for showing the correctly guessed letters of the word
     // as items in a ListView. Not yet guessed letters are hidden.
     Widget _listBuilder(BuildContext context, int index) {
-      TextStyle style = const TextStyle(
-        fontSize: 20,
-        fontFamily: 'Arial',
-      );
       return Column(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Text(_correct[index] ? _word[index] + ' ' : '  ', style: style),
-          Text(String.fromCharCode(773) + ' ', style: style),
+          Text(_correct[index] ? _word[index] + ' ' : '  ', style: spookyTextSmall),
+          Text(String.fromCharCode(773) + ' ', style: spookyTextSmall),
         ],
       );
     }
@@ -281,7 +289,7 @@ class _HomePageState extends State<HomePage> {
     // build method returns a Scaffold containing the AppBar and the homepage
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title, style: spookyTextBig),
         actions: <Widget>[
           PopupMenuButton<String>(
             itemBuilder: (BuildContext context) {
@@ -299,7 +307,6 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             Stack(
-              alignment: AlignmentDirectional.bottomEnd,
               children: [
                 SizedBox(
                   child: getPicture(),
@@ -307,18 +314,21 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.width * 600 / 790,
-                  child: Column(
-                      children: [
-                        Flexible(
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: _word.length,
-                              itemBuilder: _listBuilder,
-                          ),
-                        ),
-                        playSection,
-                    ],
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _word.length,
+                      itemBuilder: _listBuilder,
+                    ),
                   ),
+                ),
+                SizedBox(
+                    height: MediaQuery.of(context).size.width * 600 / 790,
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 20, 20),
+                      child: playSection,
+                    )
                 ),
               ],
             ),

@@ -66,6 +66,10 @@ flutter:
     - images/four.jpg
     - images/five.jpg
     - images/gameover.jpg
+  fonts:
+    - family: MonsterPumpkin
+      fonts:
+        - asset: fonts/MonsterPumpkin.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:
