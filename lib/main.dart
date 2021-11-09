@@ -1,175 +1,289 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'dart:math';
-
 import 'package:flutter/services.dart';
 
+enum PictureMarker { hangman, zero, one, two, three, four, five, gameover }
 void main() => runApp(const MyApp());
 
 // The main application
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
-    Widget playSection = Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        SizedBox(
-          child: TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'Letter',
-            ),
-            inputFormatters: [
-              LengthLimitingTextInputFormatter(1)
-            ],
-          ),
-          width: 80,
-        ),
-        ElevatedButton(
-            onPressed: () {  },
-            child: const Text('Play'),
-        ),
-      ],
-    );
-
-
-    Widget startSection = Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          child: TextFormField(
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'3-9'))
-            ],
-          ),
-          width: 80,
-        ),
-        ElevatedButton(
-          onPressed: () {  },
-          child: const Text('Start new game'),
-        ),
-      ],
-    );
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Hangman',
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text('Hangman'),
-          actions: <Widget>[
-            PopupMenuButton<String>(
-              itemBuilder: (BuildContext context) {
-                return {'Language'}.map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
-                  );
-                }).toList();
-              },
-            ),
-          ],
-        ),
-        body: Center(
-          child: Column(
-            children: [
-              Stack(
-                alignment: AlignmentDirectional.bottomEnd,
-                children: [
-                  Image.asset(
-                    'images/hangman.jpg',
-                  ),
-                  playSection,
-                ]
-              ),
-              startSection,
-            ],
-          ),
-        ),
-      ),
+      home: const HomePage(title: 'Hangman')
     );
   }
 }
 
-// Widget for the home page of your application. It is stateful, meaning
-// that it has a State object that contains fields that affect how it looks.
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+// A stateful widget for the homepage, used in main App
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  String _word = "";
+// The state of the homepage widget, used to save and display changes
+class _HomePageState extends State<HomePage> {
+  int _wrongCounter = 0;
+  List<String> _word = [];
+  List<bool> _correct = [];
+  bool _playing = false;
   var rng = Random();
-  // var wordList = nouns.sort((a, b) => a.length.compareTo(b.length));
+  var wordList = nouns;
+  TextEditingController startController = TextEditingController();
+  TextEditingController playController = TextEditingController();
+  PictureMarker selectedPicture = PictureMarker.hangman;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  String test = "test";
 
-  /*void _decrementCounter() {
-    setState(() {
-
-      _counter--;
-    });
-  }*/
-
-  void _pressButton() {
-    int words = 1000;
-    setState(() {
-      _word = nouns.take(words).elementAt(rng.nextInt(words));
-    });
-  }
-
-  void handleClick(String value) {
+  void _handleClick(String value) {
     switch (value) {
       case 'Language':
         break;
     }
   }
 
+  void _startButton() {
+    setState(() {
+      _wrongCounter = 0;
+      _word = _getWord(int.parse(startController.value.text)).toUpperCase().split('');
+      _correct = List.filled(_word.length, false);
+      print(_word.toString() +" | "+ _correct.toString());
+      _playing = true;
+      selectedPicture = PictureMarker.zero;
+      startController.text = "";
+      playController.text = "";
+    });
+  }
+
+  void _playButton() {
+    setState(() {
+      _checkMove(playController.text.toUpperCase());
+      print(_word.toString() +" | "+ _correct.toString());
+      startController.text = "";
+      playController.text = "";
+    });
+  }
+
+  void _checkMove(String letter) {
+    int wordLength = _word.length;
+    bool correct = false;
+    for(int i = 0; i < wordLength; i++) {
+      if(letter == _word[i]) {
+        if(!_correct[i]) {
+          _correct[i] = true;
+          correct = true;
+        }
+      }
+    }
+    if(correct) {
+      _checkWin();
+      print("'" + letter + "' is correct!");
+    } else {
+      _wrongCounter++;
+      _checkGameOver();
+      print("'" + letter + "' is not correct!");
+    }
+  }
+
+  void _checkWin() {
+    bool win = true;
+    for(var e in _correct) {
+      if(!e) {
+        win = false;
+      }
+    }
+    if(win) {
+      print("Correct, you won!");
+      selectedPicture = PictureMarker.hangman;
+      _reset();
+    }
+  }
+
+  void _checkGameOver() {
+    if(_wrongCounter > 5) {
+      print("Wrong, you lost the game!");
+      _reset();
+      selectedPicture = PictureMarker.gameover;
+    } else {
+      setPicture();
+    }
+  }
+
+  void _reset() {
+    _wrongCounter = 0;
+    _word = [];
+    _correct = [];
+  }
+
+  String _getWord(int wordLength) {
+    int listLength = wordList.length;
+    while(true) {
+      int randomIndex = rng.nextInt(listLength);
+      String word = wordList[randomIndex];
+      if(word.length == wordLength) {
+        print(word);
+        return word;
+      }
+    }
+  }
+
+  // Method used to update single character in input and keep the cursor at the end
+  // setState used to update buttons on input
+  void _changeTextField(String value, TextEditingController controller) {
+    setState(() {
+      if (value.length > 1) {
+        controller.text = value.substring(value.length - 1);
+        controller.selection =
+            TextSelection.fromPosition(const TextPosition(offset: 1));
+      }
+    });
+  }
+  
+  Widget getPicture() {
+    String img = 'images/hangman.jpg';
+    switch(selectedPicture) {
+      case PictureMarker.hangman:
+        img = 'images/hangman.jpg';
+        break;
+      case PictureMarker.zero:
+        img = 'images/zero.jpg';
+        break;
+      case PictureMarker.one:
+        img = 'images/one.jpg';
+        break;
+      case PictureMarker.two:
+        img = 'images/two.jpg';
+        break;
+      case PictureMarker.three:
+        img = 'images/three.jpg';
+        break;
+      case PictureMarker.four:
+        img = 'images/four.jpg';
+        break;
+      case PictureMarker.five:
+        img = 'images/five.jpg';
+        break;
+      case PictureMarker.gameover:
+        img = 'images/gameover.jpg';
+        break;
+    }
+    return Image.asset(img);
+  }
+
+  void setPicture() {
+    switch(_wrongCounter) {
+      case 0:
+        selectedPicture = PictureMarker.zero;
+        break;
+      case 1:
+        selectedPicture = PictureMarker.one;
+        break;
+      case 2:
+        selectedPicture = PictureMarker.two;
+        break;
+      case 3:
+        selectedPicture = PictureMarker.three;
+        break;
+      case 4:
+        selectedPicture = PictureMarker.four;
+        break;
+      case 5:
+        selectedPicture = PictureMarker.five;
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    // Row Widget containing the play input for selecting
+    // a letter and the button for submitting said letter
+    Widget playSection = Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        SizedBox(
+          child: TextField(
+            controller: playController,
+            onChanged: (value) {
+              _changeTextField(value, playController);
+            },
+            decoration: const InputDecoration(
+              hintText: 'Letter',
+            ),
+            inputFormatters: [
+              FilteringTextInputFormatter(
+                  RegExp(r'[a-z]', caseSensitive: false),
+                  allow: true
+              ),
+            ],
+          ),
+          width: 80,
+        ),
+        ElevatedButton(
+          onPressed: _playing && playController.text.isNotEmpty  ? _playButton : null,
+          child: const Text('Play'),
+        ),
+      ],
+    );
+    // Row Widget containing the input field for selecting the length
+    // of the word for the game and the button for starting the game
+    Widget startSection = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          child: TextField(
+            controller: startController,
+            onChanged: (value) {
+              _changeTextField(value, startController);
+            },
+            decoration: const InputDecoration(
+              hintText: 'Word length',
+            ),
+            inputFormatters: [
+              FilteringTextInputFormatter(RegExp(r'[3-9]'), allow: true),
+            ],
+          ),
+          width: 100,
+        ),
+        ElevatedButton(
+          onPressed: startController.text.isNotEmpty ? _startButton : null,
+          child: const Text('Start game'),
+        ),
+      ],
+    );
+
+    // Widget for showing the correctly guessed letters of the word
+    // as items in a ListView. Not yet guessed letters are hidden.
+    Widget _listBuilder(BuildContext context, int index) {
+      TextStyle style = const TextStyle(
+        fontSize: 20,
+        fontFamily: 'Arial',
+      );
+      return Column(
+        children: [
+          Text(_correct[index] ? _word[index] + ' ' : '  ', style: style),
+          Text(String.fromCharCode(773) + ' ', style: style),
+        ],
+      );
+    }
+
+    // build method returns a Scaffold containing the AppBar and the homepage
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
         actions: <Widget>[
           PopupMenuButton<String>(
-            onSelected: handleClick,
             itemBuilder: (BuildContext context) {
               return {'Language'}.map((String choice) {
                 return PopupMenuItem<String>(
@@ -182,51 +296,36 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see thre wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(_word),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text('test'),
-                ElevatedButton(
-                    onPressed: _pressButton, child: const Text('Button')),
+          children: [
+            Stack(
+              alignment: AlignmentDirectional.bottomEnd,
+              children: [
+                SizedBox(
+                  child: getPicture(),
+                  height: MediaQuery.of(context).size.width * 600 / 790,
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.width * 600 / 790,
+                  child: Column(
+                      children: [
+                        Flexible(
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: _word.length,
+                              itemBuilder: _listBuilder,
+                          ),
+                        ),
+                        playSection,
+                    ],
+                  ),
+                ),
               ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            startSection,
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.exposure_plus_1),
-      ),
-      /*floatingActionButton: FloatingActionButton(
-        onPressed: _decrementCounter,
-        tooltip: 'Decrement',
-        child: const Icon(Icons.exposure_minus_1),
-      ),*/// This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

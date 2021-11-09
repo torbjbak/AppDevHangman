@@ -59,6 +59,13 @@ flutter:
   uses-material-design: true
   assets:
     - images/hangman.jpg
+    - images/zero.jpg
+    - images/one.jpg
+    - images/two.jpg
+    - images/three.jpg
+    - images/four.jpg
+    - images/five.jpg
+    - images/gameover.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
