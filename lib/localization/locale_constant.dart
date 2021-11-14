@@ -23,10 +23,10 @@ Future<Locale> getLocale() async {
 Locale _locale(String languageCode) {
   return languageCode != null && languageCode.isNotEmpty
       ? Locale(languageCode, '')
-      : Locale('en', '');
+      : const Locale('en', '');
 }
 
 void changeLanguage(BuildContext context, String selectedLanguageCode) async {
   var _locale = await setLocale(selectedLanguageCode);
-  HomePage.setLocale(context, _locale);
+  HangmanApp.setLocale(context, _locale);
 }

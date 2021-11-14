@@ -23,12 +23,12 @@ class LanguageNo extends Language {
   @override String get youLost => "' var feil, du tapte spillet (og livet ditt)!";
 
   // Game rules
+  @override String get rulesTitle => "Spilleregler";
   @override String get gameRules =>
-      """
-      1. Velg lengden på ordet du skal gjette (longer = harder).
-      2. Et tilfeldig engelsk substantiv med den lengden vil bli valgt.
-      3. Gjett en bokstav (a-z). Store/små bokstaver er det samme.
-      4. Hvis du gjetter feil, eller gjetter en bokstav du alt har gjettet, så bygges en del av galgen.
-      5. Hvis du får mer enn fem feil blir galgen ferdig, og du taper spillet.
-      """;
+
+      "1. Velg lengden på ordet du skal gjette (lengre = vanskeligere).\n"
+      "2. Et tilfeldig engelsk substantiv med den lengden vil bli valgt.\n"
+      "3. Gjett en bokstav (a-z). Store/små bokstaver er det samme.\n"
+      "4. Hvis du gjetter feil, eller gjetter en bokstav du alt har gjettet, så bygges en del av galgen.\n"
+      "5. Hvis du får mer enn fem feil blir galgen ferdig, og du taper spillet.";
 }

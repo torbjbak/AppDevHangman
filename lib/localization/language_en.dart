@@ -25,12 +25,11 @@ class LanguageEn extends Language {
   @override String get youLost => "' was wrong, you lost the game (and your life)!";
 
   // Game rules
+  @override String get rulesTitle => "Game rules";
   @override String get gameRules =>
-      """
-      1. Pick the length of the word you have to guess (longer = harder).
-      2. A random English noun of that length will be chosen.
-      3. Guess a letter (a-z). Capitalization is ignored.
-      4. If you guess wrong or guess a letter you already guessed, a peice of the gallows are built.
-      5. If you get more than five wrong, the gallows will be completed and you lose the game.
-      """;
+      "1. Pick the length of the word you have to guess (longer = harder).\n"
+      "2. A random English noun of that length will be chosen.\n"
+      "3. Guess a letter (a-z). Capitalization is ignored.\n"
+      "4. If you guess wrong or guess a letter you already guessed, a piece of the gallows are built.\n"
+      "5. If you get more than five wrong the gallows will be completed, and you lose the game.";
 }

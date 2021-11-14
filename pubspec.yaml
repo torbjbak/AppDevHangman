@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.15.0-116.0.dev <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -38,6 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   english_words: ^4.0.0
   shared_preferences: ^2.0.8
+  sliding_up_panel: ^2.0.0+1
 
 dev_dependencies:
   flutter_test:
@@ -71,9 +72,9 @@ flutter:
     - images/gameover.jpg
     - images/victory.jpg
   fonts:
-    - family: MonsterPumpkin
+    - family: Halloween
       fonts:
-        - asset: fonts/MonsterPumpkin.ttf
+        - asset: fonts/Halloween.otf
 
   # To add assets to your application, add an assets section, like this:
   # assets:
