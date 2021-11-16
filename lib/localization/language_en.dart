@@ -17,12 +17,14 @@ class LanguageEn extends Language {
   @override String get startButton => "Start game";
 
   // Info text strings
-  @override String get pickLength => "Pick a word length between 3 & 9 and start the game!";
-  @override String get pickLetter => "Pick a letter (a-z)!";
-  @override String get correctLetter => "' was correct, try for the next letter!";
-  @override String get wrongLetter => "' was wrong, try again!";
-  @override String get youWon => "' was correct, you won the game!";
-  @override String get youLost => "' was wrong, you lost the game (and your life)!";
+  @override List<String> get infoText => [
+    "Pick a word length between 3 & 9 and start the game!",
+    "Pick a letter (a-z)!",
+    "Ccorrect, try for the next letter!",
+    "Wrong, try again!",
+    "Correct, you won the game!",
+    "Wrong, you lost the game (and your life)!"
+  ];
 
   // Game rules
   @override String get rulesTitle => "Game rules";

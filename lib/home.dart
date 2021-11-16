@@ -32,23 +32,23 @@ class HomeState extends State<Home> {
   bool _playing = false;
   var rng = Random();
   var wordList = nouns;
-  String infoText = "init";
+  int _infoTextIndex = 0;
 
   TextEditingController startController = TextEditingController();
   TextEditingController playController = TextEditingController();
   PictureMarker selectedPicture = PictureMarker.hangman;
 
-  void _startButton(BuildContext ctx) {
+  void _startButton() {
     setState(() {
+      _infoTextIndex = 1;
       _wrongCounter = 0;
       _word = _getWord(int.parse(startController.value.text)).toUpperCase().split('');
       _correct = List.filled(_word.length, false);
       print(_word.toString() +" | "+ _correct.toString());
       _playing = true;
-      infoText = Language.of(ctx).pickLetter;
       selectedPicture = PictureMarker.zero;
-      startController.text = "";
-      playController.text = "";
+      startController.clear();
+      playController.clear();
     });
   }
 
@@ -56,8 +56,8 @@ class HomeState extends State<Home> {
     setState(() {
       _checkMove(playController.text.toUpperCase());
       print(_word.toString() +" | "+ _correct.toString());
-      startController.text = "";
-      playController.text = "";
+      startController.clear();
+      playController.clear();
     });
   }
 
@@ -73,16 +73,16 @@ class HomeState extends State<Home> {
       }
     }
     if(correct) {
-      _checkWin();
+      _checkWin(letter);
       print("'" + letter + "' is correct!");
     } else {
       _wrongCounter++;
-      _checkGameOver();
+      _checkGameOver(letter);
       print("'" + letter + "' is not correct!");
     }
   }
 
-  void _checkWin() {
+  void _checkWin(String letter) {
     bool win = true;
     for(var e in _correct) {
       if(!e) {
@@ -92,16 +92,21 @@ class HomeState extends State<Home> {
     if(win) {
       print("Correct, you won!");
       _playing = false;
+      _infoTextIndex = 4;
       selectedPicture = PictureMarker.victory;
+    } else {
+      _infoTextIndex = 2;
     }
   }
 
-  void _checkGameOver() {
+  void _checkGameOver(String letter) {
     if(_wrongCounter > 5) {
       print("Wrong, you lost the game!");
       _playing = false;
+      _infoTextIndex = 5;
       selectedPicture = PictureMarker.gameover;
     } else {
+      _infoTextIndex = 3;
       setPicture();
     }
   }
@@ -143,11 +148,10 @@ class HomeState extends State<Home> {
 
   TextStyle spookyTextTiny = const TextStyle(
     fontFamily: 'Halloween',
-    fontSize: 7,
+    fontSize: 8,
   );
 
   TextStyle textNormal = const TextStyle(
-    fontFamily: 'Times New Roman',
     fontSize: 16,
   );
 
@@ -200,6 +204,7 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+
     // Widget for showing the correctly guessed letters of the word
     // as items in a ListView. Not yet guessed letters are hidden.
     Widget _listBuilder(BuildContext context, int index) {
@@ -290,7 +295,7 @@ class HomeState extends State<Home> {
           width: 110,
         ),
         ElevatedButton(
-          onPressed: () => startController.text.isNotEmpty ? _startButton(context) : null,
+          onPressed: startController.text.isNotEmpty ? _startButton : null,
           child: Text(Language.of(context).startButton, style: spookyTextSmall),
         ),
       ],
@@ -304,7 +309,7 @@ class HomeState extends State<Home> {
         Container(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
           child: Text(
-            infoText,
+            Language.of(context).infoText[_infoTextIndex],
             style: textNormal,
           ),
         ),
@@ -340,9 +345,10 @@ class HomeState extends State<Home> {
             padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
             child: Text(Language.of(context).rulesTitle, style: spookyTextTiny,)
           ),
-        minHeight: 28,
+        minHeight: 32,
+        maxHeight: 360,
         panel: Container(
-          padding: const EdgeInsets.fromLTRB(20, 25, 20, 20),
+          padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
           child: Text(
             Language.of(context).gameRules,
             style: textNormal,

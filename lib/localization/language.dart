@@ -18,12 +18,7 @@ abstract class Language {
   String get startButton;
 
   // Info text strings
-  String get pickLength;
-  String get pickLetter;
-  String get correctLetter;
-  String get wrongLetter;
-  String get youWon;
-  String get youLost;
+  List<String> get infoText;
 
   // Game rules
   String get rulesTitle;

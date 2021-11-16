@@ -15,19 +15,20 @@ class LanguageNo extends Language {
   @override String get startButton => "Start spillet";
 
   // Info text strings
-  @override String get pickLength => "Velg en ordlengde mellom 3 & 9 og start spillet!";
-  @override String get pickLetter => "Velg en bokstav (a-z)!";
-  @override String get correctLetter => "' var riktig, prøv for neste bokstav!";
-  @override String get wrongLetter => "' var feil, prøv igjen!";
-  @override String get youWon => "' var riktig, du vant spillet!";
-  @override String get youLost => "' var feil, du tapte spillet (og livet ditt)!";
+  @override List<String> get infoText => [
+    "Velg en ordlengde mellom 3 & 9 og start spillet!",
+    "Velg en bokstav (a-z)!",
+    "Riktig, prøv for neste bokstav!",
+    "Feil, prøv igjen!",
+    "Riktig, du vant spillet!",
+    "Feil, du tapte spillet (og livet ditt)!"
+  ];
 
   // Game rules
   @override String get rulesTitle => "Spilleregler";
   @override String get gameRules =>
-
       "1. Velg lengden på ordet du skal gjette (lengre = vanskeligere).\n"
-      "2. Et tilfeldig engelsk substantiv med den lengden vil bli valgt.\n"
+      "2. Et tilfeldig engelsk substantiv med den lengden blir valgt.\n"
       "3. Gjett en bokstav (a-z). Store/små bokstaver er det samme.\n"
       "4. Hvis du gjetter feil, eller gjetter en bokstav du alt har gjettet, så bygges en del av galgen.\n"
       "5. Hvis du får mer enn fem feil blir galgen ferdig, og du taper spillet.";
