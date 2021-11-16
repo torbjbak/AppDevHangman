@@ -1,9 +1,7 @@
-
-
 import 'package:app_dev_project/localization/language.dart';
 
+// English translations of the abstract Language class.
 class LanguageEn extends Language {
-
   // AppBar
   @override String get appTitle => "Hangman";
   @override String get language=> "Language";
@@ -20,7 +18,7 @@ class LanguageEn extends Language {
   @override List<String> get infoText => [
     "Pick a word length between 3 & 9 and start the game!",
     "Pick a letter (a-z)!",
-    "Ccorrect, try for the next letter!",
+    "Correct, try the next letter!",
     "Wrong, try again!",
     "Correct, you won the game!",
     "Wrong, you lost the game (and your life)!"

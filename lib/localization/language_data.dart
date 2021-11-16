@@ -1,3 +1,4 @@
+// Data class containing all supported languages.
 class LanguageData {
   final String name;
   final String languageCode;
@@ -6,8 +7,8 @@ class LanguageData {
 
   static List<LanguageData> languageList() {
     return <LanguageData>[
-      LanguageData("English", 'en'),
-      LanguageData("Norsk", "no"),
+      LanguageData('English', 'en'),
+      LanguageData('Norsk', 'no'),
     ];
   }
 }

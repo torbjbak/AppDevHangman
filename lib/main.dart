@@ -6,12 +6,14 @@ import 'home.dart';
 import 'localization/locale_constant.dart';
 import 'localization/localization_delegate.dart';
 
+// Method to run the app
 void main() => runApp(const HangmanApp());
 
-
+// Main Widget containing the entire UI side of the app
 class HangmanApp extends StatefulWidget {
   const HangmanApp({Key key}) : super(key: key);
 
+  //
   static void setLocale(BuildContext context, Locale newLocale) {
     var state = context.findAncestorStateOfType<_HangmanAppState>();
     state.setLocale(newLocale);

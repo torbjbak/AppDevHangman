@@ -1,7 +1,7 @@
 import 'language.dart';
 
+// Norwegian translations of the abstract Language class.
 class LanguageNo extends Language {
-
   // AppBar
   @override String get appTitle => "Hangman";
   @override String get language=> "Språk";
@@ -18,7 +18,7 @@ class LanguageNo extends Language {
   @override List<String> get infoText => [
     "Velg en ordlengde mellom 3 & 9 og start spillet!",
     "Velg en bokstav (a-z)!",
-    "Riktig, prøv for neste bokstav!",
+    "Riktig, prøv på neste bokstav!",
     "Feil, prøv igjen!",
     "Riktig, du vant spillet!",
     "Feil, du tapte spillet (og livet ditt)!"

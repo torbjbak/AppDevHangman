@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Abstract class containing all text strings in the app that needs transalting.
 abstract class Language {
   static Language of(BuildContext context) {
     return Localizations.of<Language>(context, Language);

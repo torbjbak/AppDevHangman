@@ -1,5 +1,3 @@
-
-
 import 'dart:math';
 
 import 'package:english_words/english_words.dart';
@@ -12,12 +10,14 @@ import 'localization/language.dart';
 import 'localization/language_data.dart';
 import 'localization/locale_constant.dart';
 
+// Enum identifying each game state image
 enum PictureMarker {
   hangman, zero, one,
   two, three, four,
   five, gameover, victory
 }
 
+//
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
 
