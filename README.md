@@ -29,3 +29,5 @@ For example:
 flutter run -d emulator-5554
 ```
 This will build the app and run it on your selected device.
+
+Alternatively, all this can be done with the run/debug interface in Android Studio.
