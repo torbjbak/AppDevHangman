@@ -38,13 +38,14 @@ class HomeState extends State<Home> {
   TextEditingController playController = TextEditingController();
   PictureMarker selectedPicture = PictureMarker.hangman;
 
-  void _startButton() {
+  void _startButton(BuildContext ctx) {
     setState(() {
       _wrongCounter = 0;
       _word = _getWord(int.parse(startController.value.text)).toUpperCase().split('');
       _correct = List.filled(_word.length, false);
       print(_word.toString() +" | "+ _correct.toString());
       _playing = true;
+      infoText = Language.of(ctx).pickLetter;
       selectedPicture = PictureMarker.zero;
       startController.text = "";
       playController.text = "";
@@ -289,7 +290,7 @@ class HomeState extends State<Home> {
           width: 110,
         ),
         ElevatedButton(
-          onPressed: startController.text.isNotEmpty ? _startButton : null,
+          onPressed: () => startController.text.isNotEmpty ? _startButton(context) : null,
           child: Text(Language.of(context).startButton, style: spookyTextSmall),
         ),
       ],
@@ -303,7 +304,7 @@ class HomeState extends State<Home> {
         Container(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
           child: Text(
-            Language.of(context).pickLength,
+            infoText,
             style: textNormal,
           ),
         ),
