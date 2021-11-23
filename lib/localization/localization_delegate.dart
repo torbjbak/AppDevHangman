@@ -4,7 +4,7 @@ import 'language.dart';
 import 'language_en.dart';
 import 'language_no.dart';
 
-// Specialized implementation of LocalizationDelegate, used
+// Specialized implementation of LocalizationDelegate
 class AppLocalizationDelegate extends LocalizationsDelegate<Language> {
   const AppLocalizationDelegate();
 
