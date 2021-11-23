@@ -16,11 +16,11 @@ flutter run -d chrome
 ```
 This will build the necessary project components to view the app in debug mode, and open it in your chosen browser. Then toggle device emulation in inspect mode to see the application as intended for a mobile device.
 
-To open the application in an emulator, first make sure you have a compatible emulator installed (I used Android 11 AVD with Pixel API 30), open it and find its device it. You can usually do this in the emulator settings, or if you are using ADB (Android Debug Bridge), you can find the id of your device with the following command:
+To open the application in an emulator, first make sure you have a compatible emulator installed (I used Android 11 AVD with Pixel API 30), open it and find its device ID. You can usually do this in the emulator settings, or if you are using ADB (Android Debug Bridge), you can find the id of your device with the following command:
 ```bash
 adb devices
 ```
-This will list running emulators and other compatible devices that are available. Copy the device ID you wish to run the app on, nad use the following command to build and run:
+This will list running emulators and other compatible devices that are available. Copy the device ID you wish to run the app on, and use the following command to build and run:
 ```bash
 flutter run -d <device id>
 ```
